@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionTrackerReceiver", "AuctionTrackerReceiver\AuctionTrackerReceiver.csproj", "{C3242048-50E1-4CCC-ADD7-D42B851674AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionTrackerReceiver.Tests", "AuctionTrackerReceiver.Tests\AuctionTrackerReceiver.Tests.csproj", "{ADA5ADC4-7EF2-4E26-AD50-91DC53496939}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3242048-50E1-4CCC-ADD7-D42B851674AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3242048-50E1-4CCC-ADD7-D42B851674AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3242048-50E1-4CCC-ADD7-D42B851674AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3242048-50E1-4CCC-ADD7-D42B851674AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADA5ADC4-7EF2-4E26-AD50-91DC53496939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADA5ADC4-7EF2-4E26-AD50-91DC53496939}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADA5ADC4-7EF2-4E26-AD50-91DC53496939}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADA5ADC4-7EF2-4E26-AD50-91DC53496939}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
