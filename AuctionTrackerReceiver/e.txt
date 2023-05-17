@@ -1,0 +1,4 @@
+rabbithostname=rebbit-dev
+rabbitqueue=Minko
+cataloghttpbase=http://CatalogService:80
+memcache=cache:11211
