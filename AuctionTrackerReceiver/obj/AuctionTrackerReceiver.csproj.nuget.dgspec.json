@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\William\\Projects\\BidReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj": {}
+    "C:\\Users\\William\\Projects\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj": {}
   },
   "projects": {
-    "C:\\Users\\William\\Projects\\BidReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj": {
+    "C:\\Users\\William\\Projects\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\William\\Projects\\BidReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj",
+        "projectUniqueName": "C:\\Users\\William\\Projects\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj",
         "projectName": "AuctionTrackerReceiver",
-        "projectPath": "C:\\Users\\William\\Projects\\BidReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj",
+        "projectPath": "C:\\Users\\William\\Projects\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj",
         "packagesPath": "C:\\Users\\William\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\William\\Projects\\BidReceiver\\AuctionTrackerReceiver\\obj\\",
+        "outputPath": "C:\\Users\\William\\Projects\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\William\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -43,6 +43,26 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.4, )"
+            },
+            "NLog": {
+              "target": "Package",
+              "version": "[5.1.4, )"
+            },
+            "NLog.Targets.Loki": {
+              "target": "Package",
+              "version": "[1.4.6, )"
+            },
+            "NLog.Web.AspNetCore": {
+              "target": "Package",
+              "version": "[5.2.3, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[6.5.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
