@@ -73,6 +73,7 @@ namespace AuctionTrackerReceiver.Services;
 
             if (response.IsSuccessStatusCode)
             {
+                _logger.LogInformation("fandt item i DB");
                 string responseData = await response.Content.ReadAsStringAsync();
                 wrapper = JsonConvert.DeserializeObject<Wrapper>(responseData);
 
@@ -83,24 +84,29 @@ namespace AuctionTrackerReceiver.Services;
             }
             else
             {
+                _logger.LogInformation("fandt ikke noget i db");
                 return false;
             }
         }
             if(wrapper.StartingPrice > bid.BidValue || wrapper.StartTime > timestamp || wrapper.EndTime < timestamp)
             {
+                _logger.LogInformation("bud er ikke gyldigt, har tjekket");
                 throw new Exception("Bid did not meet criteria");
             }
             
             if(wrapper.EndTime < timeinfive)
             {
+                _logger.LogInformation("tiden er snart endtime");
                 UpdateCache(bid.CatalogId,bid.BidValue,timeinfive);
                 await UpdateDatabaseTime(bid.CatalogId,timeinfive);
             }
             else
             {
+                _logger.LogInformation("updater cache");
                 UpdateCache(bid.CatalogId,bid.BidValue,wrapper.EndTime);
             }
             PostBid(bid);
+            _logger.LogInformation("poster bid");
 
            
             return true;
@@ -125,23 +131,26 @@ namespace AuctionTrackerReceiver.Services;
 
             if (currentbid != default(double) && endtime != default(DateTime))
             {
-
+                _logger.LogInformation("tingen i cachen er fundet");
             if(currentbid > bid.BidValue || endtime < timestamp)
             {
+                _logger.LogInformation("budet er ikke gyldigt grundet data tjek");
                 throw new Exception("Bid did not meet criteria");
             }
             
             if(endtime < timeinfive)
             {
+                _logger.LogInformation("tiden skal opdateres i cachen");
                 UpdateCache(bid.CatalogId,bid.BidValue,timeinfive);
                 await UpdateDatabaseTime(bid.CatalogId,timeinfive);
             }
             else
             {
+                _logger.LogInformation("opdaterer cachen");
                 UpdateCache(bid.CatalogId,bid.BidValue);
             }
             PostBid(bid);
-
+            _logger.LogInformation("har postet bid");
             return true;
             }
             else{

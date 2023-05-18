@@ -37,9 +37,11 @@ public class CustomerController : ControllerBase
         try{
             
             bool cachepresent = await _service.CheckCache(data);
+            _logger.LogInformation("har tjekket cache, status" + cachepresent);
             if (!cachepresent)
             {
                 bool catalogpresent = await _service.CheckCatalog(data);
+                _logger.LogInformation("har tjekket catalog, status" + cachepresent);
             }
             return Ok("Your bid was accepted");
         }    
