@@ -14,12 +14,12 @@ namespace AuctionTrackerReceiver.Models
         public double BidValue {get;set;}
         
         [JsonConstructor]
-        public Bid(string catalogid, string buyeremail, double bidvalue)
+        public Bid(string catalogId, string buyerEmail, double bidValue)
         {
             
-            this.CatalogId = catalogid;
-            this.BuyerEmail = buyeremail;
-            this.BidValue = bidvalue;
+            this.CatalogId = catalogId;
+            this.BuyerEmail = buyerEmail;
+            this.BidValue = bidValue;
         }
 
 
