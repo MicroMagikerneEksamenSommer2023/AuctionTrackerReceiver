@@ -145,8 +145,18 @@ namespace AuctionTrackerReceiver.Services;
             return true;
             }
             else{
-                return await CheckCatalog(bid);
+                try
+                {
+                    return await CheckCatalog(bid);
+                }
+                catch{
+                    throw new Exception("Catalog Call went bad");
+                }
+                    
             }
+        
+                
+            
         }
         public void UpdateCache(string catalogid, double price, DateTime endtime)
         {
