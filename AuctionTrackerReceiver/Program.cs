@@ -1,5 +1,6 @@
 using NLog;
 using NLog.Web;
+using AuctionTrackerReceiver.Services;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("init main");
@@ -14,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Logging.ClearProviders();
-//services her
+builder.Services.AddScoped<BiddingService>();
 builder.Host.UseNLog();
 var app = builder.Build();
 
