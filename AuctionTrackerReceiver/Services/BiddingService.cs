@@ -122,7 +122,7 @@ namespace AuctionTrackerReceiver.Services;
             DateTime endtime;
 
             MemcachedClientConfiguration config = new MemcachedClientConfiguration();
-            config.AddServer(MemCache); // Replace with your Memcached server information
+            config.AddServer("memcached",11211); // Replace with your Memcached server information
             MemcachedClient client = new MemcachedClient(config);
 
             string pricekey = "price" + bid.CatalogId;
