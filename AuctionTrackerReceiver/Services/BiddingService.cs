@@ -62,6 +62,7 @@ namespace AuctionTrackerReceiver.Services;
 
         public async Task<bool> CheckCatalog(Bid bid)
         {
+            _logger.LogInformation("ramp check catalog");
             DateTime timestamp = DateTime.UtcNow;
             DateTime timeinfive = timestamp.AddMinutes(5);
             Wrapper wrapper = new Wrapper();
@@ -114,6 +115,7 @@ namespace AuctionTrackerReceiver.Services;
 
         public async Task<bool> CheckCache(Bid bid)
         {
+            _logger.LogInformation("ramt check cache" + MemCache);
             DateTime timestamp = DateTime.UtcNow;
             DateTime timeinfive = timestamp.AddMinutes(5);
             double currentbid;
