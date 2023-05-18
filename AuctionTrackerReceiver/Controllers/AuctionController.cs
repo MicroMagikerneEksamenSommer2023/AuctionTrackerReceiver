@@ -36,7 +36,11 @@ public class CustomerController : ControllerBase
        
         try{
             
-            bool insertedStatus = await _service.CheckCache(data);
+            bool cachepresent = await _service.CheckCache(data);
+            if (!cachepresent)
+            {
+                bool catalogpresent = await _service.CheckCatalog(data);
+            }
             return Ok("Your bid was accepted");
         }    
         catch(Exception ex)

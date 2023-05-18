@@ -83,7 +83,7 @@ namespace AuctionTrackerReceiver.Services;
             }
             else
             {
-                throw new ItemsNotFoundException($"No item with ID {bid.CatalogId} was found in the database for the update.");
+                return false;
             }
         }
             if(wrapper.StartingPrice > bid.BidValue || wrapper.StartTime > timestamp || wrapper.EndTime < timestamp)
@@ -145,13 +145,7 @@ namespace AuctionTrackerReceiver.Services;
             return true;
             }
             else{
-                try
-                {
-                    return await CheckCatalog(bid);
-                }
-                catch{
-                    throw new Exception("Catalog Call went bad");
-                }
+                return false;
                     
             }
         
