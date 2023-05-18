@@ -12,7 +12,7 @@ namespace CatalogService.Controllers;
 
 
 [ApiController]
-[Route("catalogservice/v1")]
+[Route("bidreceiver/v1")]
 public class CustomerController : ControllerBase
 {
 
@@ -29,7 +29,7 @@ public class CustomerController : ControllerBase
         _service = service;
     }
 
-     [HttpPost("createitem")]
+     [HttpPost("newbid")]
     public async Task<IActionResult> CreateItem([FromBody] Bid data)
     {
         //burde return noget, men kan ikke fetche id
