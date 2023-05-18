@@ -16,12 +16,12 @@ namespace AuctionTrackerReceiver.Models
         public double BuyoutPrice {get;set;}
         
         [JsonConstructor]
-        public Wrapper(DateTime starttime, DateTime endtime, double startingprice, double buyoutprice)
+        public Wrapper(DateTime startTime, DateTime endTime, double startingPrice, double buyoutPrice)
         {
-         this.StartTime = starttime;
-         this.EndTime = endtime;
-         this.StartingPrice = startingprice;
-         this.BuyoutPrice = buyoutprice;   
+         this.StartTime = startTime;
+         this.EndTime = endTime;
+         this.StartingPrice = startingPrice;
+         this.BuyoutPrice = buyoutPrice;   
         }
         public Wrapper()
         {}
