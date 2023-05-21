@@ -9,9 +9,7 @@ using System.Text.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Enyim.Caching;
-using Enyim.Caching.Configuration;
-using Enyim.Caching.Memcached;
+using StackExchange.Redis;
 
 namespace AuctionTrackerReceiver.Services;
 
@@ -23,7 +21,7 @@ namespace AuctionTrackerReceiver.Services;
         private readonly string RabbitHostName;
         private readonly string RabbitQueue;
         private readonly string CatalogHTTPBase;
-        private readonly string MemCache;
+        private readonly string RedisConnection;
 
         public BiddingService(ILogger<BiddingService> logger, IConfiguration config)
         {
@@ -32,7 +30,7 @@ namespace AuctionTrackerReceiver.Services;
             RabbitHostName = _config["rabbithostname"];
             RabbitQueue = _config["rabbitqueue"];
             CatalogHTTPBase = _config["cataloghttpbase"];
-            MemCache = _config["memcache"];
+            RedisConnection = _config["redisconnection"];
             var factory = new ConnectionFactory() { HostName = RabbitHostName };
             var connection = factory.CreateConnection();
             _channel = connection.CreateModel();
@@ -115,24 +113,26 @@ namespace AuctionTrackerReceiver.Services;
 
         public async Task<bool> CheckCache(Bid bid)
         {
-            _logger.LogInformation("ramt check cache" + MemCache);
+            _logger.LogInformation("ramt check cache" + RedisConnection);
             DateTime timestamp = DateTime.UtcNow;
             DateTime timeinfive = timestamp.AddMinutes(5);
             double currentbid;
             DateTime endtime;
 
-            MemcachedClientConfiguration config = new MemcachedClientConfiguration();
-            config.AddServer("memcached",11211); // Replace with your Memcached server information
-            MemcachedClient client = new MemcachedClient(config);
+            string redisConnectionString = RedisConnection;
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisConnectionString);
+            IDatabase cache = redis.GetDatabase();
 
             string pricekey = "price" + bid.CatalogId;
             string datekey = "endtime" + bid.CatalogId;
 
-            currentbid = client.Get<double>(pricekey);
-            endtime = client.Get<DateTime>(datekey);
+            var price = cache.StringGet(pricekey);
+            var time = cache.StringGet(datekey);
 
-            if (currentbid != default(double) && endtime != default(DateTime))
+            if (!price.IsNull && !time.IsNull)
             {
+                currentbid = Double.Parse(price);
+                endtime = DateTime.Parse(time);
                 _logger.LogInformation("tingen i cachen er fundet");
             if(currentbid > bid.BidValue || endtime < timestamp)
             {
@@ -155,9 +155,9 @@ namespace AuctionTrackerReceiver.Services;
             _logger.LogInformation("har postet bid");
             return true;
             }
-            else{
-                return false;
-                    
+            else
+            {
+                return false;     
             }
         
                 
@@ -166,22 +166,22 @@ namespace AuctionTrackerReceiver.Services;
         public void UpdateCache(string catalogid, double price, DateTime endtime)
         {
             
-            MemcachedClientConfiguration config = new MemcachedClientConfiguration();
-            config.AddServer(MemCache); // Replace with your Memcached server information
-            MemcachedClient client = new MemcachedClient(config);
+            string redisConnectionString = RedisConnection;
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisConnectionString);
+            IDatabase cache = redis.GetDatabase();
 
-            client.Store(StoreMode.Set, "price" + catalogid,price);
-            client.Store(StoreMode.Set, "endtime" + catalogid,endtime);
+            cache.StringSet("price" + catalogid,price.ToString());
+            cache.StringSet("endtime" + catalogid,endtime.ToString());
 
         }
         public void UpdateCache(string catalogid, double price)
         {
             
-            MemcachedClientConfiguration config = new MemcachedClientConfiguration();
-            config.AddServer(MemCache); // Replace with your Memcached server information
-            MemcachedClient client = new MemcachedClient(config);
+            string redisConnectionString = RedisConnection;
+            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisConnectionString);
+            IDatabase cache = redis.GetDatabase();
 
-            client.Store(StoreMode.Set, "price" + catalogid,price);
+            cache.StringSet("price" + catalogid,price.ToString());
 
         }
         public async Task<bool> UpdateDatabaseTime(string catalogid, DateTime endtime)
