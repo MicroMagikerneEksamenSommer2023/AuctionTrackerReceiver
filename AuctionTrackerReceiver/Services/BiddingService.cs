@@ -69,6 +69,7 @@ namespace AuctionTrackerReceiver.Services;
             client.BaseAddress = new Uri(CatalogHTTPBase);
 
             HttpResponseMessage response = await client.GetAsync($"getitemandprice/{bid.CatalogId}");
+            _logger.LogInformation("ramte lige db med den her:" + client.BaseAddress.ToString() + "getitemandprice/" + bid.CatalogId );
 
             if (response.IsSuccessStatusCode)
             {
@@ -83,7 +84,7 @@ namespace AuctionTrackerReceiver.Services;
             }
             else
             {
-                _logger.LogInformation("fandt ikke noget i db");
+                _logger.LogInformation("fandt ikke noget i db" + response.StatusCode);
                 return false;
             }
         }
