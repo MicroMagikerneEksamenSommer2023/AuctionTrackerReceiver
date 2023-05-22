@@ -28,7 +28,7 @@ public class CustomerController : ControllerBase
         _service = service;
     }
 
-
+    [HttpPost("newbid")]
     public async Task<IActionResult> CreateItem([FromBody] Bid data)
     {
         //burde return noget, men kan ikke fetche id
