@@ -138,13 +138,15 @@ namespace AuctionTrackerReceiver.Services;
         if(acquiredLock){break;}
         await Task.Delay(TimeSpan.FromSeconds(1));
     }
-    
+    _logger.LogInformation("går ind i try med lock som " + acquiredLock);
     try
     {
         if (acquiredLock)
         {
+            _logger.LogInformation("lock er gamt som true");
             var price = cache.StringGet(priceKey);
             var time = cache.StringGet(dateKey);
+            _logger.LogInformation("har efterspugt ting i databasen");
 
             if (!price.IsNull && !time.IsNull)
             {
@@ -187,7 +189,7 @@ namespace AuctionTrackerReceiver.Services;
 }
         public void UpdateCache(string catalogid, double price, DateTime endtime)
         {
-            
+            _logger.LogInformation("har ramt updatecache med tid på");
             string redisConnectionString = RedisConnection;
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisConnectionString);
             IDatabase cache = redis.GetDatabase();
@@ -198,7 +200,7 @@ namespace AuctionTrackerReceiver.Services;
         }
         public void UpdateCache(string catalogid, double price)
         {
-            
+            _logger.LogInformation("har ramt updatecache uden tid");
             string redisConnectionString = RedisConnection;
             ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisConnectionString);
             IDatabase cache = redis.GetDatabase();
