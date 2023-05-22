@@ -60,7 +60,7 @@ namespace AuctionTrackerReceiver.Services;
 
         public async Task<bool> CheckCatalog(Bid bid)
         {
-            _logger.LogInformation("ramp check catalog");
+            _logger.LogInformation("ramt check catalog");
             DateTime timestamp = DateTime.UtcNow;
             DateTime timeinfive = timestamp.AddMinutes(5);
             Wrapper wrapper = new Wrapper();
@@ -103,7 +103,7 @@ namespace AuctionTrackerReceiver.Services;
             else
             {
                 _logger.LogInformation("updater cache");
-                UpdateCache(bid.CatalogId,bid.BidValue);
+                UpdateCache(bid.CatalogId,bid.BidValue,wrapper.EndTime);
             }
             PostBid(bid);
             _logger.LogInformation("poster bid");
@@ -146,7 +146,7 @@ namespace AuctionTrackerReceiver.Services;
             _logger.LogInformation("lock er gemt som true");
             var price = cache.StringGet(priceKey);
             var time = cache.StringGet(dateKey);
-            _logger.LogInformation("har efterspugt ting i databasen " + price.ToString());
+            _logger.LogInformation("har efterspugt ting i databasen " + price.ToString() + "  " + time.ToString());
 
             if (!price.IsNull && !time.IsNull)
             {
