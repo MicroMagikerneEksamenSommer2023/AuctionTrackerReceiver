@@ -143,10 +143,10 @@ namespace AuctionTrackerReceiver.Services;
     {
         if (acquiredLock)
         {
-            _logger.LogInformation("lock er gamt som true");
+            _logger.LogInformation("lock er gemt som true");
             var price = cache.StringGet(priceKey);
             var time = cache.StringGet(dateKey);
-            _logger.LogInformation("har efterspugt ting i databasen");
+            _logger.LogInformation("har efterspugt ting i databasen " + price.ToString());
 
             if (!price.IsNull && !time.IsNull)
             {
@@ -196,6 +196,8 @@ namespace AuctionTrackerReceiver.Services;
 
             cache.StringSet("price" + catalogid,price.ToString());
             cache.StringSet("endtime" + catalogid,endtime.ToString());
+            _logger.LogInformation("har opdateret disse: " + "price" + catalogid +":"+price.ToString());
+            _logger.LogInformation("har opdateret disse: " + "endtime" + catalogid +":"+endtime.ToString());
 
         }
         public void UpdateCache(string catalogid, double price)
@@ -206,6 +208,7 @@ namespace AuctionTrackerReceiver.Services;
             IDatabase cache = redis.GetDatabase();
 
             cache.StringSet("price" + catalogid,price.ToString());
+            _logger.LogInformation("har opdateret disse: " + "price" + catalogid +":"+price.ToString());
 
         }
         public async Task<bool> UpdateDatabaseTime(string catalogid, DateTime endtime)
