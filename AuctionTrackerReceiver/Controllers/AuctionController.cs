@@ -31,18 +31,22 @@ public class CustomerController : ControllerBase
     [HttpPost("newbid")]
     public async Task<IActionResult> CreateItem([FromBody] Bid data)
     {
-        //burde return noget, men kan ikke fetche id
-       
+        
         try{
-            
+            bool catalogpresent = false;
             bool cachepresent = await _service.CheckCache(data);
             _logger.LogInformation("har tjekket cache, status" + cachepresent);
             if (!cachepresent)
             {
-                bool catalogpresent = await _service.CheckCatalog(data);
+                catalogpresent = await _service.CheckCatalog(data);
                 _logger.LogInformation("har tjekket catalog, status" + cachepresent);
             }
-            return Ok("Your bid was accepted");
+            if(catalogpresent || cachepresent){
+                return Ok("Your bid was accepted");
+            }
+            else{
+                return BadRequest("Du prøver at byde på et item der ikek findes homie");
+            }
         }    
         catch(Exception ex)
         {
