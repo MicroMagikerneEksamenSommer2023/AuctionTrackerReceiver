@@ -103,7 +103,7 @@ namespace AuctionTrackerReceiver.Services;
             else
             {
                 _logger.LogInformation("updater cache");
-                UpdateCache(bid.CatalogId,bid.BidValue,wrapper.EndTime);
+                UpdateCache(bid.CatalogId,bid.BidValue);
             }
             PostBid(bid);
             _logger.LogInformation("poster bid");
@@ -135,7 +135,7 @@ namespace AuctionTrackerReceiver.Services;
                 currentbid = Double.Parse(price);
                 endtime = DateTime.Parse(time);
                 _logger.LogInformation("tingen i cachen er fundet");
-            if(currentbid > bid.BidValue || endtime < timestamp)
+            if(currentbid >= bid.BidValue || endtime < timestamp)
             {
                 _logger.LogInformation("budet er ikke gyldigt grundet data tjek");
                 throw new Exception("Bid did not meet criteria");
@@ -217,5 +217,67 @@ namespace AuctionTrackerReceiver.Services;
                 throw new Exception("Unknow Error");
             }
         }
+        }
+        public async Task<Wrapper> FetchWrapper(string catalogid)
+        {
+            Wrapper wrapper = new Wrapper();
+            using (HttpClient client = new HttpClient())
+        {
+            client.BaseAddress = new Uri(CatalogHTTPBase);
+
+            HttpResponseMessage response = await client.GetAsync($"getitemandprice/{catalogid}");
+            _logger.LogInformation("ramte lige db med den her:" + client.BaseAddress.ToString() + "getitemandprice/" + catalogid );
+
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("fandt item i DB");
+                string responseData = await response.Content.ReadAsStringAsync();
+                wrapper = JsonConvert.DeserializeObject<Wrapper>(responseData);
+
+                return wrapper;
+            }
+            else
+            {
+                _logger.LogInformation("fandt ikke noget i db" + response.StatusCode);
+                throw new ItemsNotFoundException("Could not find item in db");
+            }
+        }
+        
+        }
+        public async Task<bool> BuyOut(Bid buyoutbid)
+        {
+            Wrapper wrapper = new Wrapper();
+            try
+            {
+                wrapper = await FetchWrapper(buyoutbid.CatalogId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("could not fetch the buyoutprice from database");
+            }
+            
+            if(buyoutbid.BidValue == wrapper.BuyoutPrice)
+            {
+                try
+                {
+                    bool cachepresent = await CheckCache(buyoutbid);
+                    if (!cachepresent)
+                    {
+                        bool catalogpresent = await CheckCatalog(buyoutbid);
+                    }
+                    UpdateCache(buyoutbid.CatalogId,buyoutbid.BidValue,DateTime.UtcNow);
+                    await UpdateDatabaseTime(buyoutbid.CatalogId,DateTime.UtcNow);
+                    return true;
+                }    
+                catch(Exception ex)
+                {
+                    throw new Exception("Buyout did not meet buyout creteria " + ex.Message);
+                } 
+            }
+            else{
+                throw new Exception("Buyout price didn't mach the requested buyuoutprice");
+            }
+
+            
         }
     }

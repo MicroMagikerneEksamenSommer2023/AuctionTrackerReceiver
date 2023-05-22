@@ -7,7 +7,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 //using System.Web.Http;
-
 namespace CatalogService.Controllers;
 
 
@@ -29,7 +28,7 @@ public class CustomerController : ControllerBase
         _service = service;
     }
 
-     [HttpPost("newbid")]
+
     public async Task<IActionResult> CreateItem([FromBody] Bid data)
     {
         //burde return noget, men kan ikke fetche id
@@ -48,13 +47,21 @@ public class CustomerController : ControllerBase
         catch(Exception ex)
         {
             return BadRequest(ex.Message);
-        }
-        
-       
-        
-
-        
+        }   
     }
-
+    [HttpPost("buyout")]
+    public async Task<IActionResult> BuyOut([FromBody] Bid data)
+    {
+        try
+        {
+            bool buyoutcheck = await _service.BuyOut(data);
+            return Ok("Your buyout was acceted");
+        }
+        catch (Exception ex)
+        {
+            
+            return BadRequest(ex.Message);
+        }
+    }
     
 }

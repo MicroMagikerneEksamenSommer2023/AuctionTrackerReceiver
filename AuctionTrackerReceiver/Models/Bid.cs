@@ -21,6 +21,8 @@ namespace AuctionTrackerReceiver.Models
             this.BuyerEmail = buyerEmail;
             this.BidValue = bidValue;
         }
+        public Bid(){}
+        
 
 
         
