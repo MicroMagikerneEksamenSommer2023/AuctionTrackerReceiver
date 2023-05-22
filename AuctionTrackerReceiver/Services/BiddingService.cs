@@ -134,6 +134,7 @@ namespace AuctionTrackerReceiver.Services;
     for(int i = 0;i<retrycount;i++)
     {
         acquiredLock = cache.LockTake(lockKey, lockValue, TimeSpan.FromSeconds(lockExpirySeconds));
+        _logger.LogInformation("har prøvet at tage log " + i + " gange" + acquiredLock);
         if(acquiredLock){break;}
         await Task.Delay(TimeSpan.FromSeconds(1));
     }
