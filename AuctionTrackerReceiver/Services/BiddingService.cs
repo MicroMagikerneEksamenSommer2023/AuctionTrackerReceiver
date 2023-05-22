@@ -112,58 +112,78 @@ namespace AuctionTrackerReceiver.Services;
             return true;
         }
 
-        public async Task<bool> CheckCache(Bid bid)
+       public async Task<bool> CheckCache(Bid bid)
+{
+    _logger.LogInformation("ramt check cache" + RedisConnection);
+    DateTime timestamp = DateTime.UtcNow;
+    DateTime timeinfive = timestamp.AddMinutes(5);
+    double currentBid;
+    DateTime endTime;
+
+    string redisConnectionString = RedisConnection;
+    ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisConnectionString);
+    IDatabase cache = redis.GetDatabase();
+
+    string priceKey = "price" + bid.CatalogId;
+    string dateKey = "endtime" + bid.CatalogId;
+    string lockKey = "lock" + bid.CatalogId;
+    string lockValue = Guid.NewGuid().ToString();
+    int lockExpirySeconds = 5;
+    int retrycount = 6;
+    bool acquiredLock = false;
+    for(int i = 0;i<retrycount;i++)
+    {
+        acquiredLock = cache.LockTake(lockKey, lockValue, TimeSpan.FromSeconds(lockExpirySeconds));
+        if(acquiredLock){break;}
+        await Task.Delay(TimeSpan.FromSeconds(1));
+    }
+    
+    try
+    {
+        if (acquiredLock)
         {
-            _logger.LogInformation("ramt check cache" + RedisConnection);
-            DateTime timestamp = DateTime.UtcNow;
-            DateTime timeinfive = timestamp.AddMinutes(5);
-            double currentbid;
-            DateTime endtime;
-
-            string redisConnectionString = RedisConnection;
-            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisConnectionString);
-            IDatabase cache = redis.GetDatabase();
-
-            string pricekey = "price" + bid.CatalogId;
-            string datekey = "endtime" + bid.CatalogId;
-
-            var price = cache.StringGet(pricekey);
-            var time = cache.StringGet(datekey);
+            var price = cache.StringGet(priceKey);
+            var time = cache.StringGet(dateKey);
 
             if (!price.IsNull && !time.IsNull)
             {
-                currentbid = Double.Parse(price);
-                endtime = DateTime.Parse(time);
+                currentBid = double.Parse(price);
+                endTime = DateTime.Parse(time);
                 _logger.LogInformation("tingen i cachen er fundet");
-            if(currentbid >= bid.BidValue || endtime < timestamp)
-            {
-                _logger.LogInformation("budet er ikke gyldigt grundet data tjek");
-                throw new Exception("Bid did not meet criteria");
+
+                if (currentBid >= bid.BidValue || endTime < timestamp)
+                {
+                    _logger.LogInformation("budet er ikke gyldigt grundet data tjek");
+                    throw new Exception("Bid did not meet criteria");
+                }
+
+                if (endTime < timeinfive)
+                {
+                    _logger.LogInformation("tiden skal opdateres i cachen");
+                    UpdateCache(bid.CatalogId, bid.BidValue, timeinfive);
+                    await UpdateDatabaseTime(bid.CatalogId, timeinfive);
+                }
+                else
+                {
+                    _logger.LogInformation("opdaterer cachen");
+                    UpdateCache(bid.CatalogId, bid.BidValue);
+                }
+                PostBid(bid);
+                _logger.LogInformation("har postet bid");
+                return true;
             }
-            
-            if(endtime < timeinfive)
-            {
-                _logger.LogInformation("tiden skal opdateres i cachen");
-                UpdateCache(bid.CatalogId,bid.BidValue,timeinfive);
-                await UpdateDatabaseTime(bid.CatalogId,timeinfive);
-            }
-            else
-            {
-                _logger.LogInformation("opdaterer cachen");
-                UpdateCache(bid.CatalogId,bid.BidValue);
-            }
-            PostBid(bid);
-            _logger.LogInformation("har postet bid");
-            return true;
-            }
-            else
-            {
-                return false;     
-            }
-        
-                
-            
         }
+
+        return false;
+    }
+    finally
+    {
+        if (acquiredLock)
+        {
+            cache.LockRelease(lockKey, lockValue);
+        }
+    }
+}
         public void UpdateCache(string catalogid, double price, DateTime endtime)
         {
             
