@@ -211,39 +211,31 @@ namespace AuctionTrackerReceiver.Services;
             _logger.LogInformation("har opdateret disse: " + "price" + catalogid +":"+price.ToString());
 
         }
-        public async Task<bool> UpdateDatabaseTime(string catalogid, DateTime endtime)
+        public async Task<bool> UpdateDatabaseTime(string catalogId, DateTime endTime)
+{
+    using (HttpClient client = new HttpClient())
+    {
+        client.BaseAddress = new Uri(CatalogHTTPBase);
+        TimeDTO timeDto = new TimeDTO(catalogId, endTime);
+        string requestBody = JsonConvert.SerializeObject(timeDto);
+        StringContent content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+        HttpResponseMessage response = await client.PutAsync("updatetime", content);
+        if (response.IsSuccessStatusCode)
         {
-            using (HttpClient client = new HttpClient())
+            Console.WriteLine("Update successful.");
+            return true;
+        }
+        else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
-            // Set the base URL of the API endpoint
-            client.BaseAddress = new Uri(CatalogHTTPBase);
-
-            // Create a new StringContent with the request body
-            string requestBody = $"\"{catalogid}\", \"{endtime.ToString("yyyy-MM-ddTHH:mm:ss")}\"";
-            StringContent content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
-
-            // Send the PUT request and receive the response
-            HttpResponseMessage response = await client.PutAsync("updatetime", content);
-
-            // Ensure the request was successful
-            if (response.IsSuccessStatusCode)
-            {
-                // Process the successful response
-                Console.WriteLine("Update successful.");
-                return true;
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                // Handle the case when the item is not found
-                Console.WriteLine("Item not found.");
-                throw new Exception("Could not reach catalogservice");
-            }
-            else
-            {
-                throw new Exception("Unknow Error");
-            }
+            Console.WriteLine("Item not found.");
+            throw new Exception("Could not reach catalogservice");
         }
+        else
+        {
+            throw new Exception("Unknown Error");
         }
+    }
+}
         public async Task<Wrapper> FetchWrapper(string catalogid)
         {
             Wrapper wrapper = new Wrapper();
@@ -286,14 +278,19 @@ namespace AuctionTrackerReceiver.Services;
             {
                 try
                 {
+                    bool catalogpresent = false;
                     bool cachepresent = await CheckCache(buyoutbid);
                     if (!cachepresent)
                     {
-                        bool catalogpresent = await CheckCatalog(buyoutbid);
+                        catalogpresent = await CheckCatalog(buyoutbid);
                     }
-                    UpdateCache(buyoutbid.CatalogId,buyoutbid.BidValue,DateTime.UtcNow);
-                    await UpdateDatabaseTime(buyoutbid.CatalogId,DateTime.UtcNow);
-                    return true;
+                    if(cachepresent || catalogpresent)
+                    {
+                        UpdateCache(buyoutbid.CatalogId,buyoutbid.BidValue,DateTime.UtcNow);
+                        await UpdateDatabaseTime(buyoutbid.CatalogId,DateTime.UtcNow);
+                        return true;
+                    }
+                    else{throw new Exception("du prøvede at byde på noget der ikke eksiterede");}
                 }    
                 catch(Exception ex)
                 {
