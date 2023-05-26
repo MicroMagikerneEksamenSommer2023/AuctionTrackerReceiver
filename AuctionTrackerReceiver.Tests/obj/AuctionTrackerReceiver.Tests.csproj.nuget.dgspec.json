@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\William\\Projects\\BidReceiver\\AuctionTrackerReceiver.Tests\\AuctionTrackerReceiver.Tests.csproj": {}
+    "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver.Tests\\AuctionTrackerReceiver.Tests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\William\\Projects\\BidReceiver\\AuctionTrackerReceiver.Tests\\AuctionTrackerReceiver.Tests.csproj": {
+    "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver.Tests\\AuctionTrackerReceiver.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\William\\Projects\\BidReceiver\\AuctionTrackerReceiver.Tests\\AuctionTrackerReceiver.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver.Tests\\AuctionTrackerReceiver.Tests.csproj",
         "projectName": "AuctionTrackerReceiver.Tests",
-        "projectPath": "C:\\Users\\William\\Projects\\BidReceiver\\AuctionTrackerReceiver.Tests\\AuctionTrackerReceiver.Tests.csproj",
-        "packagesPath": "C:\\Users\\William\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\William\\Projects\\BidReceiver\\AuctionTrackerReceiver.Tests\\obj\\",
+        "projectPath": "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver.Tests\\AuctionTrackerReceiver.Tests.csproj",
+        "packagesPath": "C:\\Users\\Kerst\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\William\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Kerst\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -27,7 +27,11 @@
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj": {
+                "projectPath": "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -59,6 +63,10 @@
             "coverlet.collector": {
               "target": "Package",
               "version": "[3.1.2, )"
+            },
+            "moq": {
+              "target": "Package",
+              "version": "[4.18.4, )"
             }
           },
           "imports": [
@@ -77,7 +85,99 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj",
+        "projectName": "AuctionTrackerReceiver",
+        "projectPath": "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\AuctionTrackerReceiver.csproj",
+        "packagesPath": "C:\\Users\\Kerst\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Kerst\\OneDrive - EFIF\\Dokumenter\\4 semester\\EksamenSommer2023\\AuctionTrackerReceiver\\AuctionTrackerReceiver\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Kerst\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[7.0.5, )"
+            },
+            "NLog": {
+              "target": "Package",
+              "version": "[5.1.5, )"
+            },
+            "NLog.Targets.Loki": {
+              "target": "Package",
+              "version": "[1.4.6, )"
+            },
+            "NLog.Web.AspNetCore": {
+              "target": "Package",
+              "version": "[5.2.3, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
+            "StackExchange.Redis": {
+              "target": "Package",
+              "version": "[2.6.111, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     }
