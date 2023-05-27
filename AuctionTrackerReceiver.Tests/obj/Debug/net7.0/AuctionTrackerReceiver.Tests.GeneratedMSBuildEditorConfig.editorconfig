@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AuctionTrackerReceiver.Tests
-build_property.ProjectDir = C:\Users\Kerst\OneDrive - EFIF\Dokumenter\4 semester\EksamenSommer2023\AuctionTrackerReceiver\AuctionTrackerReceiver.Tests\
+build_property.ProjectDir = c:\Users\Kerst\OneDrive - EFIF\Dokumenter\4 semester\EksamenSommer2023\AuctionTrackerReceiver\AuctionTrackerReceiver.Tests\

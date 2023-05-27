@@ -7,29 +7,29 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 //using System.Web.Http;
-namespace CatalogService.Controllers;
+namespace AuctionTrackerReceiver.Controllers;
 
 
 [ApiController]
 [Route("bidreceiver/v1")]
-public class CustomerController : ControllerBase
+public class AuctionController : ControllerBase
 {
 
 
-    private readonly ILogger<CustomerController> _logger;
+    private readonly ILogger<AuctionController> _logger;
 
-    private readonly BiddingService _service;
+    private readonly IBiddingService _service;
 
 
 
-    public CustomerController(ILogger<CustomerController> logger, BiddingService service)
+    public AuctionController(ILogger<AuctionController> logger, IConfiguration configuration, IBiddingService service)
     {
         _logger = logger;
         _service = service;
     }
 
     [HttpPost("newbid")]
-    public async Task<IActionResult> CreateItem([FromBody] Bid data)
+    public async Task<IActionResult> CreateBid([FromBody] Bid data)
     {
         
         try{
