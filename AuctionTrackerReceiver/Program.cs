@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Logging.ClearProviders();
-builder.Services.AddScoped<BiddingService>();
+builder.Services.AddScoped<IBiddingService, BiddingService>();
 builder.Host.UseNLog();
 var app = builder.Build();
 
