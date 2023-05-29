@@ -7,32 +7,30 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 //using System.Web.Http;
-namespace AuctionTrackerReceiver.Controllers;
 
+namespace AuctionTrackerReceiver.Controllers;
 
 [ApiController]
 [Route("bidreceiver/v1")]
 public class AuctionController : ControllerBase
 {
-
-
+    // Attributter
     private readonly ILogger<AuctionController> _logger;
-
     private readonly IBiddingService _service;
 
-
-
+    // Constructor
     public AuctionController(ILogger<AuctionController> logger, IConfiguration configuration, IBiddingService service)
     {
         _logger = logger;
         _service = service;
     }
 
+    // Opretter et nyt bud i databasen
     [HttpPost("newbid")]
     public async Task<IActionResult> CreateBid([FromBody] Bid data)
     {
-        
-        try{
+        try
+        {
             bool catalogpresent = false;
             bool cachepresent = await _service.CheckCache(data);
             _logger.LogInformation("har tjekket cache, status" + cachepresent);
@@ -41,18 +39,22 @@ public class AuctionController : ControllerBase
                 catalogpresent = await _service.CheckCatalog(data);
                 _logger.LogInformation("har tjekket catalog, status" + cachepresent);
             }
-            if(catalogpresent || cachepresent){
+            if (catalogpresent || cachepresent)
+            {
                 return Ok("Your bid was accepted");
             }
-            else{
+            else
+            {
                 return BadRequest("Du prøver at byde på et item der ikek findes homie");
             }
-        }    
-        catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
-        }   
+        }
     }
+
+    // Opretter en ny buyout i databasen
     [HttpPost("buyout")]
     public async Task<IActionResult> BuyOut([FromBody] Bid data)
     {
@@ -63,9 +65,8 @@ public class AuctionController : ControllerBase
         }
         catch (Exception ex)
         {
-            
+
             return BadRequest(ex.Message);
         }
     }
-    
 }

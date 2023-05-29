@@ -13,11 +13,12 @@ using AuctionTrackerReceiver.Models;
 namespace AuctionTrackerReceiver.Tests;
 
 public class ServiceTests
-
 {
+    // Attributter til ILogger og IConfuguration
     private ILogger<AuctionController> _logger = null;
     private IConfiguration _configuration = null;
 
+    // Opsætter testmiljøet ved at initialisere _logger og _configuration
     [SetUp]
     public void Setup()
     {
@@ -33,6 +34,7 @@ public class ServiceTests
             .Build();
     }
 
+    // Tester oprettelse af et bid gennem catalog med succes
     [Test]
     public async Task CreateBidCatalogTest_Succes()
     {
@@ -58,7 +60,8 @@ public class ServiceTests
         Assert.That(result, Is.TypeOf<OkObjectResult>()); 
     }
 
-     [Test]
+    // Tester oprettelse af et bid gennem cache med succes
+    [Test]
     public async Task CreateBidCacheTest_Succes()
     {
         //Arrange
@@ -79,6 +82,7 @@ public class ServiceTests
         Assert.That(result, Is.TypeOf<OkObjectResult>()); 
     }
 
+    // Tester oprettelse af et bid med fejl
     [Test]
     public async Task CreateBidTest_Failure()
     {
@@ -104,18 +108,13 @@ public class ServiceTests
     }
 
     /// <summary>
-    /// Helper method for creating BookingDTO instance.
+    /// Helper method for creating Bid instance.
     /// </summary>
-    /// <param name="requestTime"></param>
     /// <returns></returns>
     private Bid CreateBid(string catalogId, string buyerEmail, double bidValue)
     {
-        var bid = new Bid()
-        {
-            CatalogId = catalogId,
-            BuyerEmail = buyerEmail,
-            BidValue = bidValue,
-        };
+        var bid = new Bid(catalogId, buyerEmail, bidValue);
+       
         return bid; 
      }
 

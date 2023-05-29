@@ -27,6 +27,7 @@ public interface IBiddingService
 
 public class BiddingService : IBiddingService
 {
+    // Attributter
     private readonly ILogger<BiddingService> _logger;
     private readonly IConfiguration _config;
     private readonly IModel _channel;
@@ -35,6 +36,7 @@ public class BiddingService : IBiddingService
     private readonly string CatalogHTTPBase;
     private readonly string RedisConnection;
 
+    // Constructor
     public BiddingService(ILogger<BiddingService> logger, IConfiguration config)
     {
         _config = config;
@@ -48,6 +50,7 @@ public class BiddingService : IBiddingService
         _channel = connection.CreateModel();
     }
 
+    // Sender en ny budbesked til RabbitMQ-køen og returnerer det oprettede budobjekt
     public Bid PostBid(Bid data)
     {
         Bid newBid = data;
@@ -70,6 +73,7 @@ public class BiddingService : IBiddingService
         return newBid;
     }
 
+    // Kontrollerer kataloget for et bud. Hvis budet opfylder visse kriterier, opdateres cache og database, og budet sendes til RabbitMQ.
     public async Task<bool> CheckCatalog(Bid bid)
     {
         _logger.LogInformation("ramt check catalog");
@@ -80,6 +84,7 @@ public class BiddingService : IBiddingService
         {
             client.BaseAddress = new Uri(CatalogHTTPBase);
 
+            // Hent item og pris fra kataloget ved at foretage en GET-anmodning til Catalog-service
             HttpResponseMessage response = await client.GetAsync($"getitemandprice/{bid.CatalogId}");
             _logger.LogInformation("ramte lige db med den her:" + client.BaseAddress.ToString() + "getitemandprice/" + bid.CatalogId);
 
@@ -106,6 +111,7 @@ public class BiddingService : IBiddingService
             throw new Exception("Bid did not meet criteria");
         }
 
+        // Opdater tiden i cache og database med 5 minutter, hvis tiden snart er endtime
         if (wrapper.EndTime < timeinfive)
         {
             _logger.LogInformation("tiden er snart endtime");
@@ -117,13 +123,15 @@ public class BiddingService : IBiddingService
             _logger.LogInformation("updater cache");
             UpdateCache(bid.CatalogId, bid.BidValue, wrapper.EndTime);
         }
+
+        // Send budet til RabbitMQ
         PostBid(bid);
         _logger.LogInformation("poster bid");
-
 
         return true;
     }
 
+    // Kontrollerer cache for et bud. Hvis budet opfylder visse kriterier, opdateres cache og database, og budet sendes til RabbitMQ.
     public async Task<bool> CheckCache(Bid bid)
     {
         _logger.LogInformation("ramt check cache" + RedisConnection);
@@ -132,6 +140,7 @@ public class BiddingService : IBiddingService
         double currentBid;
         DateTime endTime;
 
+        // Opret forbindelse til Redis-cache ved hjælp af en ConnectionMultiplexer
         string redisConnectionString = RedisConnection;
         ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisConnectionString);
         IDatabase cache = redis.GetDatabase();
@@ -143,6 +152,8 @@ public class BiddingService : IBiddingService
         int lockExpirySeconds = 5;
         int retrycount = 6;
         bool acquiredLock = false;
+
+        // Forsøg at tage en lås på cache
         for (int i = 0; i < retrycount; i++)
         {
             acquiredLock = cache.LockTake(lockKey, lockValue, TimeSpan.FromSeconds(lockExpirySeconds));
@@ -172,6 +183,7 @@ public class BiddingService : IBiddingService
                         throw new Exception("Bid did not meet criteria");
                     }
 
+                    // Opdater tiden i cache og database med 5 minutter, hvis tiden snart er endtime
                     if (endTime < timeinfive)
                     {
                         _logger.LogInformation("tiden skal opdateres i cachen");
@@ -183,14 +195,17 @@ public class BiddingService : IBiddingService
                         _logger.LogInformation("opdaterer cachen");
                         UpdateCache(bid.CatalogId, bid.BidValue);
                     }
+
+                    // Send budet til RabbitMQ
                     PostBid(bid);
                     _logger.LogInformation("har postet bid");
                     return true;
                 }
             }
-
             return false;
         }
+
+        // Frigiver låsen
         finally
         {
             if (acquiredLock)
@@ -199,6 +214,8 @@ public class BiddingService : IBiddingService
             }
         }
     }
+
+    // Opdaterer cache med prisen og slutdatoen for et katalogelement
     public void UpdateCache(string catalogid, double price, DateTime endtime)
     {
         _logger.LogInformation("har ramt updatecache med tid på");
@@ -210,8 +227,9 @@ public class BiddingService : IBiddingService
         cache.StringSet("endtime" + catalogid, endtime.ToString());
         _logger.LogInformation("har opdateret disse: " + "price" + catalogid + ":" + price.ToString());
         _logger.LogInformation("har opdateret disse: " + "endtime" + catalogid + ":" + endtime.ToString());
-
     }
+
+    // Opdaterer cache med prisen for et katalogelement
     public void UpdateCache(string catalogid, double price)
     {
         _logger.LogInformation("har ramt updatecache uden tid");
@@ -221,8 +239,9 @@ public class BiddingService : IBiddingService
 
         cache.StringSet("price" + catalogid, price.ToString());
         _logger.LogInformation("har opdateret disse: " + "price" + catalogid + ":" + price.ToString());
-
     }
+
+    // Opdaterer slutdatoen for et katalogelement i databasen
     public async Task<bool> UpdateDatabaseTime(string catalogId, DateTime endTime)
     {
         using (HttpClient client = new HttpClient())
@@ -248,6 +267,8 @@ public class BiddingService : IBiddingService
             }
         }
     }
+
+    // Henter Wrapper-objektet for et katalogelement fra databasen
     public async Task<Wrapper> FetchWrapper(string catalogid)
     {
         Wrapper wrapper = new Wrapper();
@@ -272,8 +293,9 @@ public class BiddingService : IBiddingService
                 throw new ItemsNotFoundException("Could not find item in db");
             }
         }
-
     }
+
+    // Udfører en BuyOut for et bud ved at kontrollere betingelserne og opdatere databasen og cache'en.
     public async Task<bool> BuyOut(Bid buyoutbid)
     {
         Wrapper wrapper = new Wrapper();
@@ -313,7 +335,5 @@ public class BiddingService : IBiddingService
         {
             throw new Exception("Buyout price didn't mach the requested buyuoutprice");
         }
-
-
     }
 }
